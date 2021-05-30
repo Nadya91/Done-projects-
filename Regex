@@ -1,0 +1,30 @@
+using System;
+using System.Text.RegularExpressions;
+namespace test
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string input = Console.ReadLine();
+            Regex regex = new Regex(@"%(?<customer>[A-Z][a-z]+)%[^|$%.]*<(?<product>\w+)>[^|$%.]*\|(?<quantity>\d+)\|[^|$%.]*?(?<price>\d+\.?\d*)\$");
+            double totalSum = 0;
+            while (input!= "end of shift")
+            {
+                Match match = regex.Match(input);
+                if(match.Success)
+                {
+                    string customer = match.Groups["customer"].Value;
+                    string product = match.Groups["product"].Value;
+                    int quantity = int.Parse(match.Groups["quantity"].Value);
+                    double price = double.Parse(match.Groups["price"].Value);
+                    double sum = price * quantity;
+                    totalSum += sum;
+                    Console.WriteLine($"{customer}: {product} - {sum:f2}");
+                }
+                input = Console.ReadLine();
+            }
+            Console.WriteLine($"Total income: {totalSum:f2}");
+        }
+     }
+}
