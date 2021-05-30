@@ -1,0 +1,66 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace Race
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<string> listOfPeople = Console.ReadLine().Split(", ").ToList();
+            Dictionary<string, int> dictionaryOfName = new Dictionary<string, int>();
+            foreach (var name in listOfPeople)
+            {
+                if (!dictionaryOfName.ContainsKey(name))
+                {
+                    dictionaryOfName.Add(name, 0);
+                }
+            }
+
+            string input = Console.ReadLine();
+
+            while (input!= "end of race")
+            {
+                string name = string.Empty;
+                int distance = 0;
+                Regex nameRegex = new Regex(@"[A-Za-z]");
+                Regex distanceRegex = new Regex(@"[0-9]");
+                int sum = 0;
+                MatchCollection matches = nameRegex.Matches(input);
+
+                foreach (Match match in matches)
+                {
+                    name += match.Value;
+                }
+                 
+                if (dictionaryOfName.ContainsKey(name))
+                {
+                    MatchCollection matchesDistance = distanceRegex.Matches(input);
+
+                    foreach (Match match in matchesDistance)
+                    {
+                        distance += int.Parse(match.Value);
+                    }
+                    dictionaryOfName[name] += distance;
+                }
+                input = Console.ReadLine();
+            }
+            dictionaryOfName = dictionaryOfName
+               .OrderByDescending(x => x.Value)
+               .Take(3)
+               .ToDictionary(x => x.Key, y => y.Value);
+
+            int count = 1;
+
+            foreach (var kvp in dictionaryOfName)
+            {
+                string place = count == 1 ? "st" : count == 2 ? "nd" : "rd";
+                Console.WriteLine($"{count}{place} place: {kvp.Key}");
+                count++;
+            }
+
+        }
+    }
+}
